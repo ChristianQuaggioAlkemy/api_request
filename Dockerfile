@@ -8,4 +8,4 @@ RUN pip install -r requirements
 COPY . /app
 ENV PYTHONPATH=/app
 
-CMD [ "python3", "./api_request.py" ]
+CMD [ "pytest", "-v" ]
