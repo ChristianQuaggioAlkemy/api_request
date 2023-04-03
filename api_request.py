@@ -34,10 +34,15 @@ with open ('request.json', 'w') as f:
     f.write(json.dumps(json_response))
 
 
+headers = {
+  'x-rapidapi-key': 'CHIAVE_FALZA',
+  'x-rapidapi-host': 'v3.football.api-sports.io'
+}
+
 
 response_2 = requests.get(
     url,
-    headers={'Authorization': "iZ4RAvZAG2ROqH19VDp06O41hVDKC37C5qh621ZJERQ9Sdl4gAlsB7l4SZQ"},
+    headers=headers,
     data=payload
 )
 json_response_2 = response_2.json()
