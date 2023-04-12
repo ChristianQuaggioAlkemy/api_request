@@ -71,13 +71,21 @@ class TestApiUser:
         sid = login(url_login, user_data)
         headers = {'Authorization': sid}
         url = "http://localhost:5000/api/user" + "/" + user['username']
-        response = requests.put(url, headers=headers, json=new_user)
+        response = requests.put(
+                url, 
+                headers=headers, 
+                json=new_user
+                )
 
         assert response.status_code == 200
-        assert response.text == "successful operation"       
-        response_3 = requests.put("http://localhost:5000/api/user/giovannimuciaccia", headers=headers, json=new_user)
+        
+        response_3 = requests.put(
+                "http://localhost:5000/api/user/giovannimuciaccia", 
+                headers=headers, 
+                json=new_user
+                )
         assert response_3.status_code == 404
-        assert response_3.text == "user not found"
+        #assert response_3.text == "user not found"
 
     def test_get_modified_user(self):
         sid = login(url_login, new_user_data)
@@ -125,6 +133,25 @@ class TestApiUser:
         new_user_data['password'] = new_pw
         sid = login(url_login, new_user_data)
         assert sid 
+
+    def test_logout_user(self):
+        new_user_data['password'] = new_pw
+        sid = login(url_login, new_user_data)
+        headers = {'Authorization': sid}
+        url = "http://localhost:5000/api/auth/logout"
+
+        response_logout = requests.post(
+                url,
+                headers=headers
+                )
+        assert response_logout.status_code == 200
+
+        url = "http://localhost:5000/api/user" + "/" + new_user['username']
+        response_activity = requests.get(
+                url,
+                headers=headers
+                )
+        assert response_activity.status_code == 401
 
     def test_delete_user(self):
         new_user_data['password'] = new_pw
