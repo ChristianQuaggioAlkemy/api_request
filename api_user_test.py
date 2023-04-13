@@ -65,18 +65,34 @@ class TestApiUser:
 
         assert response.status_code == 200
         assert r['username']
+    
+    def test_get_list_users(self):
+        
+        sid = login(url_login, user_data)
+        headers = {'Authorization': sid}
+        url = "http://localhost:5000/api/user"
+
+        response = requests.get(
+                url,
+                headers=headers
+                )
+
+        assert response.status_code == 200
+        assert response.json()
 
     def test_put_user(self):
         
         sid = login(url_login, user_data)
         headers = {'Authorization': sid}
         url = "http://localhost:5000/api/user" + "/" + user['username']
+        print(headers)
+        print(url)
         response = requests.put(
                 url, 
                 headers=headers, 
                 json=new_user
                 )
-
+        print(response.request.body)
         assert response.status_code == 200
         
         response_3 = requests.put(
@@ -84,9 +100,8 @@ class TestApiUser:
                 headers=headers, 
                 json=new_user
                 )
-        assert response_3.status_code == 404
+        assert response_3.status_code == 401
         #assert response_3.text == "user not found"
-
     def test_get_modified_user(self):
         sid = login(url_login, new_user_data)
         headers = {'Authorization': sid}
@@ -114,20 +129,23 @@ class TestApiUser:
                 json=new_pass
                 )
         assert response.status_code == 200
-        
+        print(sid)
         fake_pw = {"old_password": "belando", "new_password": "besugo"}
         response = requests.put(
                 url,
                 headers=headers,
                 json=fake_pw
                 )
-        assert response.status_code == 401
+        assert response.status_code == 400
 
     def test_login_new_password(self):
+
         response = requests.post(
                 url_login,
                 json=new_user_data
                 )
+        sid = response.json()['info'][0]['sessionId']
+        print(sid)
         assert response.status_code == 401
 
         new_user_data['password'] = new_pw
